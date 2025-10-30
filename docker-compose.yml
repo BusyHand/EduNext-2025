@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+
+    # PHP Service container
+    laravel_app:
+        platform: linux/amd64
+        build:
+            args:
+                user: laravel_user
+                uid: 1000
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel_app
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - redis
+        networks:
+            - laravel_app_network
+
+    #nginx service
+    laravel_webserver:
+        platform: linux/amd64
+        image: nginx:alpine
+        container_name: laravel_webserver_container
+        restart: unless-stopped
+        ports:
+            - "6162:80"
+        depends_on:
+            - laravel_app
+            - redis
+        volumes:
+            - ./:/var/www
+            - ./docker-compose/nginx/:/etc/nginx/conf.d
+        networks:
+            - laravel_app_network
+
+    postgres:
+        image: postgres:17.4
+        restart: always
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_DATABASE}
+            TZ: Asia/Yekaterinburg
+        healthcheck:
+            test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
+            interval: 10s
+            timeout: 5s
+            start_period: 10s
+            retries: 5
+        networks:
+            - laravel_app_network
+        env_file: .env
+
+    redis:
+        image: redis:8.0.3
+        restart: always
+        ports:
+            - "6379:6379"
+        environment:
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        volumes:
+            - ./redis_data:/data
+        deploy:
+            resources:
+                limits:
+                    cpus: '0.50'
+                    memory: 512M
+                reservations:
+                    cpus: '0.25'
+                    memory: 256M
+        healthcheck:
+            test: redis-cli ping
+            interval: 10s
+            timeout: 5s
+            start_period: 10s
+            retries: 5
+        depends_on:
+            - postgres
+        networks:
+            - laravel_app_network
+        env_file: .env
+
+
+networks:
+    laravel_app_network:
+        driver: bridge
+
+volumes:
+    postgres_data:
