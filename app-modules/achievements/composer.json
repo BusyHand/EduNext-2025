@@ -1,0 +1,24 @@
+{
+	"name": "modules/achievements",
+	"description": "",
+	"type": "library",
+	"version": "1.0",
+	"license": "proprietary",
+	"require": {},
+	"autoload": {
+		"psr-4": {
+			"Modules\\Achievements\\": "src/",
+			"Modules\\Achievements\\Tests\\": "tests/",
+			"Modules\\Achievements\\Database\\Factories\\": "database/factories/",
+			"Modules\\Achievements\\Database\\Seeders\\": "database/seeders/"
+		}
+	},
+	"minimum-stability": "stable",
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Modules\\Achievements\\Providers\\AchievementsServiceProvider"
+			]
+		}
+	}
+}
