@@ -2,7 +2,9 @@
 
 // use Modules\Core\Http\Controllers\CoreController;
 
-// Route::get('/cores', [CoreController::class, 'index'])->name('cores.index');
+use Modules\Core\Http\Controllers\Controller;
+
+Route::get('/cores', [Controller::class, 'test']);
 // Route::get('/cores/create', [CoreController::class, 'create'])->name('cores.create');
 // Route::post('/cores', [CoreController::class, 'store'])->name('cores.store');
 // Route::get('/cores/{core}', [CoreController::class, 'show'])->name('cores.show');
