@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS roles
 (
     id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(50) UNIQUE NOT NULL,
-    description TEXT,
+    description VARCHAR(500),
     is_default  BOOLEAN   DEFAULT FALSE,
     created_by  BIGINT             NOT NULL REFERENCES users (id),
     updated_by  BIGINT             NOT NULL REFERENCES users (id),
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS permissions
 (
     id          BIGSERIAL PRIMARY KEY,
     name        VARCHAR(100) UNIQUE NOT NULL,
-    description TEXT,
+    description VARCHAR(500),
     created_by  BIGINT              NOT NULL REFERENCES users (id),
     updated_by  BIGINT              NOT NULL REFERENCES users (id),
     deleted_by  BIGINT              NOT NULL REFERENCES users (id),
