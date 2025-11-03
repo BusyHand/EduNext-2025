@@ -47,7 +47,7 @@ class Course extends Model
 
     public function progress()
     {
-        return $this->hasMany(UserProgress::class);
+        return $this->hasMany(UserLesson::class);
     }
 
     public function creator(): BelongsTo

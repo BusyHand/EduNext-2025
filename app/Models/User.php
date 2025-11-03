@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Auth\Models\Role;
 use Modules\Auth\Models\UserCredential;
 use Modules\Core\Models\Course;
-use Modules\Core\Models\UserProgress;
+use Modules\Core\Models\UserLesson;
 
 class User extends Authenticatable
 {
@@ -61,7 +61,7 @@ class User extends Authenticatable
 
     public function progress(): HasMany
     {
-        return $this->hasMany(UserProgress::class);
+        return $this->hasMany(UserLesson::class);
     }
 
     public function createdRoles(): HasMany
