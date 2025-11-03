@@ -4,7 +4,6 @@ namespace Modules\Auth\Http\Mappers;
 
 use Modules\Auth\Http\Data\PermissionData;
 use Modules\Auth\Models\Permission;
-use Modules\Core\Models\Course;
 
 class PermissionMapper
 {
