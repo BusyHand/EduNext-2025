@@ -2,16 +2,12 @@
 
 namespace Modules\Core\Http\Mappers;
 
-use Modules\Core\Http\Data\CourseData;
-use Modules\Core\Http\Data\LessonData;
-use Modules\Core\Http\Data\UserCourseData;
-use Modules\Core\Models\Course;
-use Modules\Core\Models\Lesson;
+use Modules\Core\Http\Dtos\UserCourseDto;
 use Modules\Core\Models\UserCourse;
 
 class UserCourseMapper
 {
-    public function toModel(UserCourseData $data): UserCourse
+    public function toModel(UserCourseDto $data): UserCourse
     {
         return new UserCourse([
             'user_id' => $data->user_id,

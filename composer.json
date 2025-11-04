@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.4",
+        "czim/laravel-filter": "^5.0",
         "darkaonline/l5-swagger": "^9.0",
         "internachi/modular": "^2.3",
         "laravel/framework": "^12.0",

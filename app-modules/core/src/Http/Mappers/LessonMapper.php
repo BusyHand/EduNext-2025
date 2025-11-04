@@ -2,14 +2,12 @@
 
 namespace Modules\Core\Http\Mappers;
 
-use Modules\Core\Http\Data\CourseData;
-use Modules\Core\Http\Data\LessonData;
-use Modules\Core\Models\Course;
+use Modules\Core\Http\Dtos\LessonDto;
 use Modules\Core\Models\Lesson;
 
 class LessonMapper
 {
-    public function toModel(LessonData $data): Lesson
+    public function toModel(LessonDto $data): Lesson
     {
         return new Lesson([
             'title' => $data->title,

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26b19c1b6cc7fdc25779965c327b1eb3",
+    "content-hash": "5c5a71037af0e215efac33aac0085368",
     "packages": [
         {
             "name": "brick/math",
@@ -756,6 +756,66 @@
                 }
             ],
             "time": "2024-05-06T16:37:16+00:00"
+        },
+        {
+            "name": "czim/laravel-filter",
+            "version": "5.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/czim/laravel-filter.git",
+                "reference": "097999167e15492dc41963a4a09a716fd0b074c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/czim/laravel-filter/zipball/097999167e15492dc41963a4a09a716fd0b074c6",
+                "reference": "097999167e15492dc41963a4a09a716fd0b074c6",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^10 || ^11 || ^12",
+                "illuminate/support": "^10 || ^11 || ^12",
+                "myclabs/php-enum": "^1.8",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "nunomaduro/larastan": "^2.2",
+                "orchestra/testbench": "^8.0",
+                "phpstan/phpstan-mockery": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.1",
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Czim\\Filter\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Coen Zimmerman",
+                    "email": "coen.zimmerman@endeavour.nl",
+                    "homepage": "https://endeavour.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Filter for Laravel Eloquent queries, with support for modular filter building",
+            "homepage": "https://github.com/czim/laravel-filter",
+            "keywords": [
+                "database",
+                "eloquent",
+                "filter",
+                "filters",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/czim/laravel-filter/issues",
+                "source": "https://github.com/czim/laravel-filter/tree/5.0.2"
+            },
+            "time": "2025-05-05T16:03:49+00:00"
         },
         {
             "name": "darkaonline/l5-swagger",
@@ -3252,6 +3312,69 @@
                 }
             ],
             "time": "2025-03-24T10:02:05+00:00"
+        },
+        {
+            "name": "myclabs/php-enum",
+            "version": "1.8.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/myclabs/php-enum.git",
+                "reference": "e7be26966b7398204a234f8673fdad5ac6277802"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/e7be26966b7398204a234f8673fdad5ac6277802",
+                "reference": "e7be26966b7398204a234f8673fdad5ac6277802",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "1.*",
+                "vimeo/psalm": "^4.6.2 || ^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MyCLabs\\Enum\\": "src/"
+                },
+                "classmap": [
+                    "stubs/Stringable.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP Enum contributors",
+                    "homepage": "https://github.com/myclabs/php-enum/graphs/contributors"
+                }
+            ],
+            "description": "PHP Enum implementation",
+            "homepage": "https://github.com/myclabs/php-enum",
+            "keywords": [
+                "enum"
+            ],
+            "support": {
+                "issues": "https://github.com/myclabs/php-enum/issues",
+                "source": "https://github.com/myclabs/php-enum/tree/1.8.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mnapoli",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/myclabs/php-enum",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-01-14T11:49:03+00:00"
         },
         {
             "name": "nesbot/carbon",

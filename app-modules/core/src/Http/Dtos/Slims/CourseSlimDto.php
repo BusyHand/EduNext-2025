@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Core\Http\Data;
+namespace Modules\Core\Http\Dtos\Slims;
 
 use Carbon\Carbon;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-class CourseData extends Data
+class CourseSlimDto extends Data
 {
     public function __construct(
         public readonly int     $id,

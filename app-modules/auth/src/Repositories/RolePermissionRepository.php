@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Auth\Services;
+namespace Modules\Auth\Repositories;
 
 use Modules\Core\Models\Course;
 

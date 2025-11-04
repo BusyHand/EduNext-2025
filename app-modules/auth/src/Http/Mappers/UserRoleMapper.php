@@ -4,8 +4,6 @@ namespace Modules\Auth\Http\Mappers;
 
 use Modules\Auth\Http\Data\UserRoleData;
 use Modules\Auth\Models\UserRole;
-use Modules\Core\Http\Data\CourseData;
-use Modules\Core\Models\Course;
 
 class UserRoleMapper
 {

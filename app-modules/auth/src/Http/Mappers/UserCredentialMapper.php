@@ -4,8 +4,6 @@ namespace Modules\Auth\Http\Mappers;
 
 use Modules\Auth\Http\Data\UserCredentialData;
 use Modules\Auth\Models\UserCredential;
-use Modules\Core\Http\Data\CourseData;
-use Modules\Core\Models\Course;
 
 class UserCredentialMapper
 {
