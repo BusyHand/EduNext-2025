@@ -2,11 +2,14 @@
 
 namespace Modules\Core\Http\Mappers;
 
-use Illuminate\Database\Eloquent\Collection;
-use Modules\Core\Http\Dtos\CourseDto;
-use Modules\Core\Http\Dtos\Slims\CourseSlimDto;
+use App\Http\Dtos\PagebleDto;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Modules\Core\Http\Filters\CourseFilter;
 use Modules\Core\Http\Filters\Requests\CourseFilterRequest;
+use Modules\Core\Http\Requests\CourseStoreRequest;
+use Modules\Core\Http\Requests\CourseUpdateRequest;
+use Modules\Core\Http\Response\CourseDto;
+use Modules\Core\Http\Response\Slims\CourseSlimDto;
 use Modules\Core\Models\Course;
 
 class CourseMapper
@@ -17,17 +20,20 @@ class CourseMapper
         return new CourseFilter($filterRequest->toCourseFilterData());
     }
 
-    public function toModel(CourseDto $data): Course
+    public function toModelFromStore(CourseStoreRequest $data): Course
     {
         return new Course([
             'title' => $data->title,
             'description' => $data->description,
-            'is_published' => $data->is_published,
-            'published_at' => $data->published_at,
-            'owner_id' => $data->owner_id,
-            'created_by' => $data->created_by,
-            'updated_by' => $data->updated_by,
-            'deleted_by' => $data->deleted_by,
+            'is_published' => $data->isPublished,
+        ]);
+    }
+    public function toModelFromUpdate(CourseUpdateRequest $data): Course
+    {
+        return new Course([
+            'title' => $data->title,
+            'description' => $data->description,
+            'is_published' => $data->isPublished,
         ]);
     }
 
@@ -37,18 +43,12 @@ class CourseMapper
             id: $course->id,
             title: $course->title,
             description: $course->description,
-            is_published: $course->is_published,
-            published_at: $course->published_at,
-            owner_id: $course->owner_id,
-            created_by: $course->created_by,
-            updated_by: $course->updated_by,
-            deleted_by: $course->deleted_by,
+            isPublished: $course->is_published,
+            publishedAt: $course->published_at,
+            ownerId: $course->owner_id,
+            createdBy: $course->created_by,
+            updatedBy: $course->updated_by,
         );
-    }
-
-    public function toDtos(Collection $courses): Collection
-    {
-        return $courses->transform(fn($course) => $this->toDto($course));
     }
 
     public function toSlimDto(Course $course): CourseSlimDto
@@ -57,17 +57,13 @@ class CourseMapper
             id: $course->id,
             title: $course->title,
             description: $course->description,
-            is_published: $course->is_published,
-            published_at: $course->published_at,
-            owner_id: $course->owner_id,
-            created_by: $course->created_by,
-            updated_by: $course->updated_by,
-            deleted_by: $course->deleted_by,
+            ownerId: $course->owner_id,
+            createdAt: $course->created_at,
         );
     }
 
-    public function toSlimDtos(Collection $courses): Collection
+    public function toPaginateSlimDtos(LengthAwarePaginator $courses): PagebleDto
     {
-        return $courses->transform(fn($course) => $this->toSlimDto($course));
+        return PagebleDto::fromPaginator($courses, fn($course) => $this->toSlimDto($course));
     }
 }

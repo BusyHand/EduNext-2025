@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -54,7 +55,8 @@ class RouteServiceProvider extends ServiceProvider
                     continue;
                 }
 
-                Route::prefix("api/v{$version}")
+                Route::middleware([SubstituteBindings::class])
+                    ->prefix("api/v{$version}")
                     ->group($routeFile);
             }
         }

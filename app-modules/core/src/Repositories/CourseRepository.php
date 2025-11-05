@@ -2,9 +2,10 @@
 
 namespace Modules\Core\Repositories;
 
-use App\Http\Requests\Pageable;
-use App\Http\Requests\PageableData;
-use Illuminate\Database\Eloquent\Collection;
+use App\Http\Data\PageableData;
+use App\Traits\Pageable;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Core\Http\Filters\CourseFilter;
 use Modules\Core\Models\Course;
 
@@ -12,45 +13,55 @@ class CourseRepository
 {
     use Pageable;
 
-    public function findAll(CourseFilter $filterQuery, PageableData $pageableData): Collection
+    public function findAll(CourseFilter $filterQuery, PageableData $pageableData): LengthAwarePaginator
     {
-        $query = $filterQuery->apply(Course::query());
-        return $this->applyPagination($query, $pageableData)
-            ->get();
+        $query = $filterQuery->apply(Course::published());
+        return $this->paginate($query, $pageableData);
     }
 
-    public function findById(Course $course)
+    public function store(Course $courseToSave): Course
     {
-
+        $courseToSave->save();
+        return $courseToSave;
     }
 
-    public function store()
+    public function update(Course $oldCourse, Course $newCourse): Course
     {
-
+        $oldCourse->update($newCourse->toArray());
+        return $oldCourse->refresh();
     }
 
-    public function update()
+    public function updatePartial(Course $oldCourse, Course $newCourse): Course
     {
-
+        $filledData = array_filter($newCourse->toArray(), fn($value) => !is_null($value));
+        $oldCourse->update($filledData);
+        return $oldCourse->fresh();
     }
 
-    public function updatePartial()
+    public function restore(int $courseId): Course
     {
+        $affected = Course::withTrashed()
+            ->where('id', $courseId)
+            ->whereNotNull('deleted_at')
+            ->update([
+                'deleted_at' => null,
+                'deleted_by' => null,
+            ]);
 
+        if ($affected === 0) {
+            throw new ModelNotFoundException("Course not found or already restored");
+        }
+
+        return Course::findOrFail($courseId);
     }
 
-    public function restore(string $courseId)
+    public function deleteSoft(Course $course): bool
     {
-
+        return $course->delete();
     }
 
-    public function deleteSoft()
+    public function deleteHard(Course $course): bool
     {
-
-    }
-
-    public function deleteHard()
-    {
-
+        return $course->forceDelete();
     }
 }

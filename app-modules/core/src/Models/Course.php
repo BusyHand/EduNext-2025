@@ -3,15 +3,18 @@
 namespace Modules\Core\Models;
 
 use App\Models\User;
+use App\Traits\HasUserActions;
+use Barryvdh\LaravelIdeHelper\Eloquent;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/** @mixin Eloquent */
 class Course extends Model
 {
-    //use HasFactory,
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, HasUserActions;
 
     protected $fillable = [
         'title',
@@ -69,5 +72,18 @@ class Course extends Model
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Course $course) {
+            $course->published_at = $course->is_published ? now() : null;
+        });
+
+        static::updating(function (Course $course) {
+            if ($course->isDirty('is_published')) {
+                $course->published_at = $course->is_published ? now() : null;
+            }
+        });
     }
 }

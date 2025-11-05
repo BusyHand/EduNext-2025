@@ -13,17 +13,6 @@ use Modules\Core\Models\Lesson;
  */
 class UserLessonController
 {
-    /**
-     * @OA\Get(
-     *     path="/api/test",
-     *     tags={"Test"},
-     *     summary="Проверка Swagger",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Успешный ответ"
-     *     )
-     * )
-     */
     public function findAll()
     {
 

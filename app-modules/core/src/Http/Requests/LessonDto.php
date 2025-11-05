@@ -1,20 +1,20 @@
 <?php
 
-namespace Modules\Core\Http\Dtos;
+namespace Modules\Core\Http\Requests;
 
 use Carbon\Carbon;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-class CourseDto extends Data
+class LessonDto extends Data
 {
     public function __construct(
         public readonly int     $id,
         public readonly string  $title,
-        public readonly ?string $description,
+        public readonly ?string $content,
         public readonly bool    $is_published,
         public readonly ?Carbon $published_at,
-        public readonly ?int    $owner_id,
+        public readonly int     $course_id,
         public readonly ?int    $created_by,
         public readonly ?int    $updated_by,
         public readonly ?int    $deleted_by,
@@ -25,10 +25,10 @@ class CourseDto extends Data
         return [
             'id'           => ['integer', 'min:1'],
             'title'        => ['string', 'max:255', 'required'],
-            'description'  => ['nullable', 'string'],
+            'content'      => ['nullable', 'string'],
             'is_published' => ['boolean'],
             'published_at' => ['nullable', 'date'],
-            'owner_id'     => ['nullable', 'integer', 'min:1'],
+            'course_id'    => ['integer', 'min:1', 'required'],
             'created_by'   => ['nullable', 'integer', 'min:1'],
             'updated_by'   => ['nullable', 'integer', 'min:1'],
             'deleted_by'   => ['nullable', 'integer', 'min:1'],

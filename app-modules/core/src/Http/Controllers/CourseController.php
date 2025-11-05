@@ -2,19 +2,18 @@
 
 namespace Modules\Core\Http\Controllers;
 
+use App\Http\Dtos\PagebleDto;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Modules\Core\Http\Dtos\CourseDto;
+use Modules\Core\Http\Requests\CourseStoreRequest;
 use Modules\Core\Http\Filters\Requests\CourseFilterRequest;
 use Modules\Core\Http\Mappers\CourseMapper;
+use Modules\Core\Http\Requests\CourseUpdateRequest;
+use Modules\Core\Http\Response\CourseDto;
 use Modules\Core\Models\Course;
 use Modules\Core\Services\CourseService;
 
-/**
- * @OA\Tag(
- *     name="Test",
- *     description="Тестовые методы"
- * )
- */
+
 readonly class CourseController
 {
     public function __construct(
@@ -24,59 +23,54 @@ readonly class CourseController
     {
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/v1/courses",
-     *     tags={"Test"},
-     *     summary="Получить все курсы",
-     *     @OA\Request (
-     *
-     *     )
-     *     @OA\Response(
-     *         response=200,
-     *         description="Успешный ответ"
-     *     )
-     * )
-     */
-    public function findAll(CourseFilterRequest $filterRequest): Collection
+    public function findAll(CourseFilterRequest $filterRequest): PagebleDto
     {
         $filterQuery = $this->courseMapper->toFilter($filterRequest);
-        $courses = $this->courseService->findAll($filterQuery, $filterRequest->getPaginateData());
-        return $this->courseMapper->toSlimDtos($courses);
+        $paginateCourses = $this->courseService->findAll($filterQuery, $filterRequest->toPageableData());
+        return $this->courseMapper->toPaginateSlimDtos($paginateCourses);
     }
 
-    public function findById(Course $course)
+    public function findById(Course $course): CourseDto
     {
-
+        return $this->courseMapper->toDto($course);
     }
 
-    public function store(CourseDto $courseData)
+    public function store(CourseStoreRequest $courseData): CourseDto
     {
-
+        $courseToSave = $this->courseMapper->toModelFromStore($courseData);
+        $savedCourse = $this->courseService->store($courseToSave);
+        return $this->courseMapper->toDto($savedCourse);
     }
 
-    public function update(Course $course, CourseDto $courseData)
+    public function update(Course $course, CourseUpdateRequest $courseData): CourseDto
     {
-
+        $newCourse = $this->courseMapper->toModelFromUpdate($courseData);
+        $updatedCourse = $this->courseService->update($course, $newCourse);
+        return $this->courseMapper->toDto($updatedCourse);
     }
 
-    public function updatePartial(Course $course, CourseDto $courseData)
+    public function updatePartial(Course $course, CourseUpdateRequest $courseData): CourseDto
     {
-
+        $newCourse = $this->courseMapper->toModelFromUpdate($courseData);
+        $updatedCourse = $this->courseService->updatePartial($course, $newCourse);
+        return $this->courseMapper->toDto($updatedCourse);
     }
 
-    public function restore(string $courseId)
+    public function restore(int $courseId): CourseDto
     {
-
+        $restoredCourse = $this->courseService->restore($courseId);
+        return $this->courseMapper->toDto($restoredCourse);
     }
 
-    public function deleteSoft()
+    public function deleteSoft(Course $course): Response
     {
-
+        $this->courseService->deleteSoft($course);
+        return response()->noContent();
     }
 
-    public function deleteHard()
+    public function deleteHard(Course $course): Response
     {
-
+        $this->courseService->deleteHard($course);
+        return response()->noContent();
     }
 }

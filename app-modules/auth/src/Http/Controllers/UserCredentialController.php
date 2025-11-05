@@ -12,17 +12,6 @@ use Modules\Core\Models\Course;
  */
 class UserCredentialController
 {
-    /**
-     * @OA\Get(
-     *     path="/api/test",
-     *     tags={"Test"},
-     *     summary="Проверка Swagger",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Успешный ответ"
-     *     )
-     * )
-     */
     public function findAll()
     {
 

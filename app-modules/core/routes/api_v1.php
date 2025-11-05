@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Modules\Core\Http\Controllers\CourseController;
 use Modules\Core\Http\Controllers\LessonController;
 use Modules\Core\Http\Controllers\UserCourseController;
@@ -11,7 +12,7 @@ Route::prefix('courses')->group(function () {
     Route::post('/', [CourseController::class, 'store']);
     Route::put('/{course}', [CourseController::class, 'update']);
     Route::patch('/{course}', [CourseController::class, 'updatePartial']);
-    Route::patch('/restore/{courseId}', [CourseController::class, 'restore']);
+    Route::patch('/{courseId}/restore', [CourseController::class, 'restore'])->whereNumber('courseId');
     Route::delete('/{course}/soft', [CourseController::class, 'deleteSoft']);
     Route::delete('/{course}/force', [CourseController::class, 'deleteHard']);
 });

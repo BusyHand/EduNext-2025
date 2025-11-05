@@ -2,7 +2,7 @@
 
 namespace Modules\Core\Http\Mappers;
 
-use Modules\Core\Http\Dtos\UserCourseDto;
+use Modules\Core\Http\Requests\UserCourseDto;
 use Modules\Core\Models\UserCourse;
 
 class UserCourseMapper

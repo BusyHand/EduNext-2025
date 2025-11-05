@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Http\Dtos;
+namespace Modules\Core\Http\Requests;
 
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;

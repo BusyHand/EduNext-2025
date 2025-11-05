@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Http\Dtos;
+namespace Modules\Core\Http\Requests;
 
 use Carbon\Carbon;
 use Spatie\LaravelData\Data;

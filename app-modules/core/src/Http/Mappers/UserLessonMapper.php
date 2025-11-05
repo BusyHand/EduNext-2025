@@ -2,7 +2,7 @@
 
 namespace Modules\Core\Http\Mappers;
 
-use Modules\Core\Http\Dtos\UserLessonDto;
+use Modules\Core\Http\Requests\UserLessonDto;
 use Modules\Core\Models\UserLesson;
 
 class UserLessonMapper

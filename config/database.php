@@ -43,6 +43,12 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
+        'sqlite_testing' => [
+            'driver'   => 'sqlite',
+            'database' => ':memory:',
+            'prefix'   => '',
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

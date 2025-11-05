@@ -14,6 +14,9 @@ class CourseFilter extends Filter
     {
         return [
             'title' => CourseTitleFilterStrategy::class,
+            'owner' => CourseTitleFilterStrategy::class,
+            'createdAfter' => CourseTitleFilterStrategy::class,
+            'createdBefore' => CourseTitleFilterStrategy::class,
         ];
     }
 }
