@@ -19,16 +19,15 @@ Route::prefix('lessons')->group(function () {
     Route::get('/', [LessonController::class, 'findAll']);
     Route::get('/{lesson}', [LessonController::class, 'findById']);
     Route::post('/', [LessonController::class, 'store']);
-    Route::put('/{lesson}', [LessonController::class, 'update']);
     Route::patch('/{lesson}', [LessonController::class, 'updatePartial']);
-    Route::patch('/restore/{lessonId}', [LessonController::class, 'restore']);
+    Route::patch('/{lessonId}/restore', [LessonController::class, 'restore']);
     Route::delete('/{lesson}/soft', [LessonController::class, 'deleteSoft']);
     Route::delete('/{lesson}/force', [LessonController::class, 'deleteHard']);
 
     //todo реализовать
     Route::post('/{lesson}/ask', [LessonController::class, 'askQuestion']);
 
-    //todo реализовать
+    //todo реализовать доп 2
     Route::get('/{lesson}/generate-task', [LessonController::class, 'askQuestion']);
 
 });

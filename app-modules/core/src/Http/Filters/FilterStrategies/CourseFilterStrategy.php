@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-class CourseCreatedAfterFilterStrategy implements ParameterFilterInterface
+class CourseFilterStrategy implements ParameterFilterInterface
 {
 
     public function apply(
@@ -18,6 +18,7 @@ class CourseCreatedAfterFilterStrategy implements ParameterFilterInterface
         FilterInterface               $filter,
     ): Model|Builder|EloquentBuilder
     {
-        return $query->whereDate('created_at', '>=', $value);
+        $courseId = (int)$value;
+        return $query->where('course_id', $courseId);
     }
 }

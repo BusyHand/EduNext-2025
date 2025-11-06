@@ -5,7 +5,7 @@ namespace Modules\Core\Http\Mappers;
 use App\Http\Dtos\PagebleDto;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Modules\Core\Http\Filters\CourseFilter;
-use Modules\Core\Http\Requests\CourseFilterRequest;
+use Modules\Core\Http\Filters\Requests\CourseFilterRequest;
 use Modules\Core\Http\Requests\CourseStoreRequest;
 use Modules\Core\Http\Requests\CourseUpdateRequest;
 use Modules\Core\Http\Response\CourseDto;

@@ -4,8 +4,8 @@ namespace Modules\Core\Http\Controllers;
 
 use App\Http\Dtos\PagebleDto;
 use Illuminate\Http\Response;
+use Modules\Core\Http\Filters\Requests\CourseFilterRequest;
 use Modules\Core\Http\Mappers\CourseMapper;
-use Modules\Core\Http\Requests\CourseFilterRequest;
 use Modules\Core\Http\Requests\CourseStoreRequest;
 use Modules\Core\Http\Requests\CourseUpdateRequest;
 use Modules\Core\Http\Response\CourseDto;

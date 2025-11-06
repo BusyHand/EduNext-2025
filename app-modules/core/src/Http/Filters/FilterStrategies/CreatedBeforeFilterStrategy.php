@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-class CourseCreatedBeforeFilterStrategy implements ParameterFilterInterface
+class CreatedBeforeFilterStrategy implements ParameterFilterInterface
 {
 
     public function apply(

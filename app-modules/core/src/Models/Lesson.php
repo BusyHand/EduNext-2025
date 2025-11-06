@@ -3,6 +3,7 @@
 namespace Modules\Core\Models;
 
 use App\Models\User;
+use App\Traits\HasUserActions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lesson extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes,HasUserActions;
 
     protected $fillable = [
         'title',
@@ -56,5 +57,18 @@ class Lesson extends Model
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Lesson $lesson) {
+            $lesson->published_at = $lesson->is_published ? now() : null;
+        });
+
+        static::updating(function (Lesson $lesson) {
+            if ($lesson->isDirty('is_published')) {
+                $lesson->published_at = $lesson->is_published ? now() : null;
+            }
+        });
     }
 }

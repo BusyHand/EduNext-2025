@@ -2,47 +2,51 @@
 
 namespace Modules\Core\Services;
 
+use App\Http\Data\PageableData;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
+use Modules\Core\Http\Filters\CourseFilter;
+use Modules\Core\Http\Filters\LessonFilter;
 use Modules\Core\Models\Course;
+use Modules\Core\Models\Lesson;
+use Modules\Core\Repositories\CourseRepository;
+use Modules\Core\Repositories\LessonRepository;
 
-class LessonService
+readonly class LessonService
 {
-    public function findAll()
+    public function __construct(
+        private LessonRepository $lessonRepository
+    )
     {
-
     }
 
-    public function findById(Course $course)
+    public function findAll(LessonFilter $filterQuery, PageableData $pageableData): LengthAwarePaginator
     {
-
+        return $this->lessonRepository->findAll($filterQuery, $pageableData);
     }
 
-    public function store()
+    public function store(Lesson $lessonToSave): Lesson
     {
-
+        return $this->lessonRepository->store($lessonToSave);
     }
 
-    public function update()
+    public function updatePartial(Lesson $oldLesson, Lesson $newLesson): Lesson
     {
-
+        return $this->lessonRepository->updatePartial($oldLesson, $newLesson);
     }
 
-    public function updatePartial()
+    public function restore(int $lessonsId): Lesson
     {
-
+        return $this->lessonRepository->restore($lessonsId);
     }
 
-    public function restore(string $courseId)
+    public function deleteSoft(Lesson $lesson): void
     {
-
+        $this->lessonRepository->deleteSoft($lesson);
     }
 
-    public function deleteSoft()
+    public function deleteHard(Lesson $lesson): void
     {
-
-    }
-
-    public function deleteHard()
-    {
-
+        $this->lessonRepository->deleteHard($lesson);
     }
 }
