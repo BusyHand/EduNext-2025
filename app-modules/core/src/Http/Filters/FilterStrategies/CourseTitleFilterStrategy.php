@@ -19,6 +19,6 @@ class CourseTitleFilterStrategy implements ParameterFilterInterface
     ): Model|Builder|EloquentBuilder
     {
         $searchCourse = mb_strtolower((string)$value);
-        return $query->where('title', 'ILIKE', '%' . $searchCourse . '%');
+        return $query->whereRaw('LOWER(title) LIKE ?', ['%' . $searchCourse . '%']);
     }
 }

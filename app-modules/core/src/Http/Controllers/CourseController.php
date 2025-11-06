@@ -4,10 +4,9 @@ namespace Modules\Core\Http\Controllers;
 
 use App\Http\Dtos\PagebleDto;
 use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
-use Modules\Core\Http\Requests\CourseStoreRequest;
-use Modules\Core\Http\Filters\Requests\CourseFilterRequest;
 use Modules\Core\Http\Mappers\CourseMapper;
+use Modules\Core\Http\Requests\CourseFilterRequest;
+use Modules\Core\Http\Requests\CourseStoreRequest;
 use Modules\Core\Http\Requests\CourseUpdateRequest;
 use Modules\Core\Http\Response\CourseDto;
 use Modules\Core\Models\Course;
@@ -40,13 +39,6 @@ readonly class CourseController
         $courseToSave = $this->courseMapper->toModelFromStore($courseData);
         $savedCourse = $this->courseService->store($courseToSave);
         return $this->courseMapper->toDto($savedCourse);
-    }
-
-    public function update(Course $course, CourseUpdateRequest $courseData): CourseDto
-    {
-        $newCourse = $this->courseMapper->toModelFromUpdate($courseData);
-        $updatedCourse = $this->courseService->update($course, $newCourse);
-        return $this->courseMapper->toDto($updatedCourse);
     }
 
     public function updatePartial(Course $course, CourseUpdateRequest $courseData): CourseDto

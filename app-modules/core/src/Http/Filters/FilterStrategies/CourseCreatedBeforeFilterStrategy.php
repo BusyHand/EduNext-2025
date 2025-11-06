@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
-class CourseOwnerFilterStrategy implements ParameterFilterInterface
+class CourseCreatedBeforeFilterStrategy implements ParameterFilterInterface
 {
 
     public function apply(
-        string                        $name,
-        mixed                         $value,
+        string $name,
+        mixed $value,
         Model|Builder|EloquentBuilder $query,
-        FilterInterface               $filter,
+        FilterInterface $filter,
     ): Model|Builder|EloquentBuilder
     {
-        $ownerId = (int)$value;
-        return $query->where('owner_id', $ownerId);
+        return $query->whereDate('created_at', '<=', $value);
     }
 }

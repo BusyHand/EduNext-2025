@@ -11,7 +11,7 @@ class CourseUpdateRequest extends Data
     public function __construct(
         public readonly ?string $title = null,
         public readonly ?string $description = null,
-        public readonly ?bool   $isPublished = null,
+        public readonly ?bool   $isPublished = false,
     )
     {
     }
@@ -19,7 +19,7 @@ class CourseUpdateRequest extends Data
     public static function rules(?ValidationContext $context = null): array
     {
         return [
-            'title' => ['required_if:title,!=,null', 'filled', 'string', 'max:255'],
+            'title' => ['required:title,!=,null', 'filled', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:500'],
             'isPublished' => ['boolean'],
         ];

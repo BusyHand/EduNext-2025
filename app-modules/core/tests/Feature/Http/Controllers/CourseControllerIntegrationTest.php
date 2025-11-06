@@ -3,6 +3,7 @@
 namespace Modules\Core\Tests\Feature\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Core\Models\Course;
 use Tests\TestCase;
@@ -182,42 +183,6 @@ class CourseControllerIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function it_updates_course_successfully()
-    {
-        $course = Course::factory()->create([
-            'title' => 'Old Title',
-            'description' => 'Old Description',
-            'is_published' => false,
-        ]);
-
-        $updateData = [
-            'title' => 'Updated Title',
-            'description' => 'Updated Description',
-            'isPublished' => true,
-        ];
-
-        $response = $this->putJson("/api/v1/courses/{$course->id}", $updateData);
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'id' => $course->id,
-                'title' => 'Updated Title',
-                'description' => 'Updated Description',
-                'isPublished' => true,
-                'updatedBy' => $this->user->id,
-            ]);
-        $this->assertNotNull($response->json('publishedAt'));
-
-        $this->assertDatabaseHas('courses', [
-            'id' => $course->id,
-            'title' => 'Updated Title',
-            'description' => 'Updated Description',
-            'is_published' => true,
-            'updated_by' => $this->user->id,
-        ]);
-    }
-
-    /** @test */
     public function it_deletes_course_softly()
     {
         $course = Course::factory()->create();
@@ -334,18 +299,6 @@ class CourseControllerIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_404_when_updating_nonexistent_course()
-    {
-        $updateData = [
-            'title' => 'Updated Title',
-        ];
-
-        $response = $this->putJson("/api/v1/courses/999", $updateData);
-
-        $response->assertStatus(404);
-    }
-
-    /** @test */
     public function it_returns_404_when_partially_updating_nonexistent_course()
     {
         $updateData = [
@@ -453,5 +406,251 @@ class CourseControllerIntegrationTest extends TestCase
         $this->assertEquals('Third', $data[0]['title']);
         $this->assertEquals('Second', $data[1]['title']);
         $this->assertEquals('First', $data[2]['title']);
+    }
+
+    public function it_filters_courses_by_created_date_range()
+    {
+        $oldCourse = Course::factory()->create(['created_at' => '2024-01-01 00:00:00']);
+        $recentCourse = Course::factory()->create(['created_at' => '2024-02-01 00:00:00']);
+        $newCourse = Course::factory()->create(['created_at' => '2024-03-01 00:00:00']);
+
+        $response = $this->getJson('/api/v1/courses?createdAfter=2024-01-15&createdBefore=2024-02-15');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['title' => $recentCourse->title])
+            ->assertJsonMissing(['title' => $oldCourse->title])
+            ->assertJsonMissing(['title' => $newCourse->title]);
+    }
+
+    /** @test */
+    public function it_filters_courses_by_owner_id()
+    {
+        $otherUser = User::factory()->create();
+        $userCourse = Course::factory()->create(['owner_id' => $this->user->id]);
+        $otherCourse = Course::factory()->create(['owner_id' => $otherUser->id]);
+
+        $response = $this->getJson("/api/v1/courses?owner={$this->user->id}");
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['title' => $userCourse->title])
+            ->assertJsonMissing(['title' => $otherCourse->title]);
+    }
+
+    /** @test */
+    public function it_combines_multiple_filters()
+    {
+        Course::factory()->create([
+            'title' => 'Laravel Course',
+            'is_published' => true,
+            'owner_id' => $this->user->id,
+            'created_at' => '2024-02-01'
+        ]);
+        Course::factory()->create([
+            'title' => 'React Course',
+            'is_published' => false,
+            'owner_id' => $this->user->id
+        ]);
+        Course::factory()->create([
+            'title' => 'Vue Course',
+            'is_published' => true,
+            'owner_id' => User::factory()->create()->id
+        ]);
+
+        $response = $this->getJson('/api/v1/courses?title=laravel&isPublished=true&owner=' . $this->user->id);
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonFragment(['title' => 'Laravel Course']);
+    }
+
+    /** @test */
+    public function it_returns_empty_results_when_no_filters_match()
+    {
+        Course::factory()->create(['title' => 'Laravel Course']);
+        Course::factory()->create(['title' => 'React Course']);
+
+        $response = $this->getJson('/api/v1/courses?title=vue');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
+
+    /** @test */
+    public function it_validates_invalid_date_format_for_created_after()
+    {
+        $response = $this->getJson('/api/v1/courses?createdAfter=invalid-date');
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['createdAfter']);
+    }
+
+    /** @test */
+    public function it_validates_invalid_date_format_for_created_before()
+    {
+        $response = $this->getJson('/api/v1/courses?createdBefore=invalid-date');
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['createdBefore']);
+    }
+
+    /** @test */
+    public function it_validates_owner_is_positive_integer()
+    {
+        $response = $this->getJson('/api/v1/courses?owner=-1');
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['owner']);
+    }
+
+    /** @test */
+    public function it_handles_case_insensitive_title_filter()
+    {
+        Course::factory()->create(['title' => 'LARAVEL Course']);
+        Course::factory()->create(['title' => 'laravel course']);
+        Course::factory()->create(['title' => 'React Course']);
+
+        $response = $this->getJson('/api/v1/courses?title=LaRaVeL');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data');
+    }
+
+    /** @test */
+    public function it_paginates_with_custom_per_page()
+    {
+        Course::factory()->count(15)->create();
+
+        $response = $this->getJson('/api/v1/courses?size=5');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'meta' => [
+                    'perPage' => 5,
+                    'total' => 15,
+                    'lastPage' => 3,
+                ]
+            ])
+            ->assertJsonCount(5, 'data');
+    }
+
+    /** @test */
+    public function it_uses_default_pagination_when_invalid_size_provided()
+    {
+        Course::factory()->count(25)->create();
+
+        $response = $this->getJson('/api/v1/courses?size=invalid');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'data',
+                'meta' => ['currentPage', 'perPage', 'total', 'lastPage']
+            ]);
+    }
+
+    /** @test */
+    public function it_sorts_by_multiple_columns()
+    {
+        Course::factory()->create(['title' => 'B Course', 'created_at' => '2024-01-01']);
+        Course::factory()->create(['title' => 'A Course', 'created_at' => '2024-01-02']);
+        Course::factory()->create(['title' => 'B Course', 'created_at' => '2024-01-03']);
+
+        $response = $this->getJson('/api/v1/courses?sort=title,created_at,desc');
+
+        $response->assertStatus(200);
+
+        $data = $response->json('data');
+        $this->assertEquals('A Course', $data[0]['title']);
+        $this->assertEquals('B Course', $data[1]['title']);
+        $this->assertEquals('2024-01-03', Carbon::parse($data[1]['createdAt'])->format('Y-m-d'));
+        $this->assertEquals('B Course', $data[2]['title']);
+        $this->assertEquals('2024-01-01', Carbon::parse($data[2]['createdAt'])->format('Y-m-d'));
+    }
+
+    /** @test */
+    public function it_handles_invalid_sort_parameters_gracefully()
+    {
+        Course::factory()->create(['title' => 'Test Course']);
+
+        $response = $this->getJson('/api/v1/courses?sort=invalid_column,desc');
+
+        $response->assertStatus(422);
+    }
+
+    /** @test */
+    public function it_creates_course_with_special_characters_in_title()
+    {
+        $courseData = [
+            'title' => 'Course with spéciål chàräctérs & symbols! @#$%',
+            'isPublished' => true,
+        ];
+
+        $response = $this->postJson('/api/v1/courses', $courseData);
+
+        $response->assertStatus(201)
+            ->assertJsonFragment(['title' => 'Course with spéciål chàräctérs & symbols! @#$%']);
+
+        $this->assertDatabaseHas('courses', [
+            'title' => 'Course with spéciål chàräctérs & symbols! @#$%',
+        ]);
+    }
+
+    /** @test */
+    public function it_handles_concurrent_updates_correctly()
+    {
+        $course = Course::factory()->create([
+            'title' => 'Original Title',
+            'description' => 'Original Description',
+        ]);
+
+        // Simulate concurrent updates
+        $update1 = ['title' => 'First Update'];
+        $update2 = ['description' => 'Second Update'];
+
+        $response1 = $this->patchJson("/api/v1/courses/{$course->id}", $update1);
+        $response2 = $this->patchJson("/api/v1/courses/{$course->id}", $update2);
+
+        $response1->assertStatus(200);
+        $response2->assertStatus(200);
+
+        $finalResponse = $this->getJson("/api/v1/courses/{$course->id}");
+        $finalResponse->assertJson([
+            'title' => 'First Update',
+            'description' => 'Second Update',
+        ]);
+    }
+
+    /** @test */
+    public function it_returns_correct_metadata_with_filters()
+    {
+        Course::factory()->count(8)->create(['is_published' => true]);
+        Course::factory()->count(4)->create(['is_published' => false]);
+
+        $response = $this->getJson('/api/v1/courses?isPublished=true&size=5');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'meta' => [
+                    'total' => 8,
+                    'perPage' => 5,
+                    'lastPage' => 2,
+                    'currentPage' => 1,
+                ]
+            ])
+            ->assertJsonCount(5, 'data');
+    }
+
+    /** @test */
+    public function it_searches_by_partial_title_match()
+    {
+        Course::factory()->create(['title' => 'Advanced Laravel Programming']);
+        Course::factory()->create(['title' => 'Laravel for Beginners']);
+        Course::factory()->create(['title' => 'React Native Guide']);
+
+        $response = $this->getJson('/api/v1/courses?title=laravel');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(2, 'data');
     }
 }

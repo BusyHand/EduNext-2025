@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Core\Http\Filters\Data;
+namespace Modules\Core\Http\Data;
 
 use Czim\Filter\FilterData;
 
