@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Modules\Auth\Models\Role;
 use Modules\Auth\Models\UserCredential;
 use Modules\Core\Models\Course;
 use Modules\Core\Models\UserLesson;
+use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasRoles;
 
     protected $fillable = [
         'email',
@@ -35,16 +36,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'email' => $this->email,
+            'username' => $this->username,
+            // 'roles' => $this->getRoleNames()->toArray(),
+            // 'permissions' => $this->getAllPermissions()->pluck('name')->toArray(),
+        ];
+    }
+
     public function credentials(): HasOne
     {
         return $this->hasOne(UserCredential::class);
-    }
-
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'user_roles')
-            ->withTimestamps()
-            ->withPivot(['created_by', 'updated_by', 'deleted_by']);
     }
 
     public function ownedCourses(): HasMany
@@ -62,11 +74,6 @@ class User extends Authenticatable
     public function progress(): HasMany
     {
         return $this->hasMany(UserLesson::class);
-    }
-
-    public function createdRoles(): HasMany
-    {
-        return $this->hasMany(Role::class, 'created_by');
     }
 
     public function scopeActive($query)

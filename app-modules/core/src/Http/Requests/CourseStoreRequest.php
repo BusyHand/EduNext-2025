@@ -8,13 +8,12 @@ use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 class CourseStoreRequest extends Data
 {
+
     public function __construct(
         public readonly string  $title,
         public readonly ?string $description = null,
         public readonly ?bool   $isPublished = false,
-    )
-    {
-    }
+    ) {}
 
     public static function rules(?ValidationContext $context = null): array
     {

@@ -6,6 +6,7 @@ use App\Exceptions\ModelAlreadyExistsException;
 use App\Http\Data\PageableData;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Modules\Core\Http\Filters\UserLessonFilter;
 use Modules\Core\Models\Lesson;
 use Modules\Core\Models\UserLesson;
@@ -35,7 +36,12 @@ readonly class UserLessonService
         return $this->userLessonRepository->store($userCourse);
     }
 
-    public function complete(Lesson $lesson): UserLesson {
+    public function complete(Lesson $lesson): UserLesson
+    {
+        $userLesson = $this->userLessonRepository->findByUserIdAndLessonId(Auth::id(), $lesson->id);
+        $userLesson->is_completed = true;
+        $userLesson->update();
+        return $userLesson;
     }
 
     public function restore(int $userId, int $lessonId): UserLesson

@@ -12,9 +12,7 @@ class LessonUpdateRequest extends Data
         public readonly ?string $title = null,
         public readonly ?string $content = null,
         public readonly ?bool   $isPublished = null,
-    )
-    {
-    }
+    ) {}
 
     public static function rules(?ValidationContext $context = null): array
     {

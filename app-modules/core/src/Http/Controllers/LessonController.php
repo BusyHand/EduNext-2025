@@ -11,6 +11,7 @@ use Modules\Core\Http\Requests\LessonStoreRequest;
 use Modules\Core\Http\Requests\LessonUpdateRequest;
 use Modules\Core\Http\Requests\QuestionRequest;
 use Modules\Core\Http\Response\LessonDto;
+use Modules\Core\Models\Course;
 use Modules\Core\Models\Lesson;
 use Modules\Core\Services\LessonService;
 
@@ -34,7 +35,7 @@ readonly class LessonController
         return $this->lessonMapper->toDto($lesson);
     }
 
-    public function store(LessonStoreRequest $lessonRequest): LessonDto
+    public function store(LessonStoreRequest $lessonRequest, Course $course): LessonDto
     {
         $lessonToSave = $this->lessonMapper->toModelFromStore($lessonRequest);
         $savedLesson = $this->lessonService->store($lessonToSave);

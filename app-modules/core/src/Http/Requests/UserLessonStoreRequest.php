@@ -10,9 +10,7 @@ class UserLessonStoreRequest extends Data
     public function __construct(
         public readonly int $userId,
         public readonly int $lessonId,
-    )
-    {
-    }
+    ) {}
 
     public static function rules(?ValidationContext $context = null): array
     {

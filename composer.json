@@ -19,7 +19,10 @@
         "modules/ai-integration": "*",
         "modules/auth": "*",
         "modules/core": "*",
-        "spatie/laravel-data": "^4.18"
+        "ronasit/laravel-swagger": "^3.2",
+        "spatie/laravel-data": "^4.18",
+        "spatie/laravel-permission": "^6.23",
+        "tymon/jwt-auth": "^2.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",

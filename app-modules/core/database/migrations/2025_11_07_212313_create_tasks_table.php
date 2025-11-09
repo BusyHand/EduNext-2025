@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('task_status_id')->constrained()->onDelete('cascade');
             $table->text('solution')->nullable();
             $table->text('feedback')->nullable();
+            $table->text('last_answer')->nullable();
             $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->foreignId('updated_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('deleted_by')->nullable()->constrained('users')->onDelete('cascade');

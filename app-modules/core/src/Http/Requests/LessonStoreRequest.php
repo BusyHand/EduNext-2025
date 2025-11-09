@@ -13,9 +13,7 @@ class LessonStoreRequest extends Data
         public readonly string $content,
         public readonly bool   $isPublished,
         public readonly int    $courseId,
-    )
-    {
-    }
+    ) {}
 
     public static function rules(?ValidationContext $context = null): array
     {

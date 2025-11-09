@@ -12,9 +12,7 @@ class CourseUpdateRequest extends Data
         public readonly ?string $title = null,
         public readonly ?string $description = null,
         public readonly ?bool   $isPublished = false,
-    )
-    {
-    }
+    ) {}
 
     public static function rules(?ValidationContext $context = null): array
     {
