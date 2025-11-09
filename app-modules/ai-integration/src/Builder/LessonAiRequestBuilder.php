@@ -11,6 +11,7 @@ class LessonAiRequestBuilder
 
     public function generateLessonQuestion(Lesson $lesson, string $question): AiRequest
     {
+
         $course = $lesson->course;
 
         return new AiRequest(
