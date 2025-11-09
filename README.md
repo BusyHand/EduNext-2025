@@ -6,13 +6,12 @@
 # 1. Сборка и запуск контейнеров
 docker-compose up --build -d
 
-# 2. Выполнение миграций базы данных
+docker-compose exec laravel_app composer install --no-dev --optimize-autoloader
+
 docker-compose exec laravel_app php artisan migrate --force
 
-# 3. Заполнение базы тестовыми данными
 docker-compose exec laravel_app php artisan db:seed
 
-# 4. Запуск обработчика очередей в фоне
 docker-compose exec -d laravel_app php artisan queue:work
 ```
 

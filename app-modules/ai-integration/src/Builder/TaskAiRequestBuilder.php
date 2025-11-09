@@ -14,6 +14,7 @@ class TaskAiRequestBuilder
         $course = $task->course;
 
         return new AiRequest(
+            needToValidateContent: false,
             message: $lesson->content,
             prompt: "Создай учебное задание на русском языке в формате JSON со следующей структурой:\n\n" .
             "Отправь строго ответ по данному json и ничего лишнего \n" .

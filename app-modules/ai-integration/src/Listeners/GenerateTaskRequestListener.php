@@ -9,13 +9,17 @@ use Modules\AiIntegration\Builder\TaskAiRequestBuilder;
 use Modules\AiIntegration\Clients\OpenRouterClient;
 use Modules\AiIntegration\Mappers\AiTaskMapper;
 
-readonly class GenerateTaskRequestListener implements ShouldQueue
+class GenerateTaskRequestListener implements ShouldQueue
 {
 
+    public int $tries = 5;
+
+    public array $backoff = [5, 10, 30, 60, 120];
+
     public function __construct(
-        private OpenRouterClient     $openRouterClient,
-        private AiTaskMapper         $aiResponseMapper,
-        private TaskAiRequestBuilder $taskPromptBuilder,
+        private readonly OpenRouterClient     $openRouterClient,
+        private readonly AiTaskMapper         $aiResponseMapper,
+        private readonly TaskAiRequestBuilder $taskPromptBuilder,
     ) {}
 
     public function handle(GenerateTaskRequestEvent $event): void
