@@ -47,7 +47,7 @@ return [
         'title' => env('APP_NAME', 'Name of Your Application'),
         'termsOfService' => '',
         'contact' => [
-            'email' => null,
+            'email' => 'cool908yan@yandex.ru',
         ],
         'license' => [
             'name' => '',

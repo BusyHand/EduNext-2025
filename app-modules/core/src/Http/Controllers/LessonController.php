@@ -35,7 +35,7 @@ readonly class LessonController
         return $this->lessonMapper->toDto($lesson);
     }
 
-    public function store(LessonStoreRequest $lessonRequest, Course $course): LessonDto
+    public function store(LessonStoreRequest $lessonRequest): LessonDto
     {
         $lessonToSave = $this->lessonMapper->toModelFromStore($lessonRequest);
         $savedLesson = $this->lessonService->store($lessonToSave);

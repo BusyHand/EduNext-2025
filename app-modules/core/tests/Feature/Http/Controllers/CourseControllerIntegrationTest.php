@@ -186,7 +186,6 @@ class CourseControllerIntegrationTest extends TestCase
     public function it_deletes_course_softly()
     {
         $course = Course::factory()->create();
-        $this->user->assignRole('admin');
 
         $response = $this->deleteJson("/api/v1/courses/{$course->id}/soft");
 
@@ -196,7 +195,6 @@ class CourseControllerIntegrationTest extends TestCase
             'id' => $course->id,
             'deleted_by' => $this->user->id,
         ]);
-        $this->user->removeRole('admin');
     }
 
     /** @test */

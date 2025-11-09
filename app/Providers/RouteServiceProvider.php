@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use RonasIT\AutoDoc\Http\Middleware\AutoDocMiddleware;
 
 class RouteServiceProvider extends ServiceProvider
 {
