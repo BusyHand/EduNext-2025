@@ -2,47 +2,82 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Modules\Auth\Models\UserCredential;
+use Modules\Core\Models\Course;
+use Modules\Core\Models\UserLesson;
+use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, SoftDeletes, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'name',
         'email',
-        'password',
+        'username',
+        'first_name',
+        'last_name',
+        'phone',
+        'is_active',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'password',
-        'remember_token',
+        'deleted_at',
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+        'email_verified_at' => 'datetime',
+    ];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Return a key value array, containing any custom claims to be added to the JWT.
      */
-    protected function casts(): array
+    public function getJWTCustomClaims()
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email' => $this->email,
+            'username' => $this->username,
+            // 'roles' => $this->getRoleNames()->toArray(),
+            // 'permissions' => $this->getAllPermissions()->pluck('name')->toArray(),
         ];
+    }
+
+    public function credentials(): HasOne
+    {
+        return $this->hasOne(UserCredential::class);
+    }
+
+    public function ownedCourses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'owner_id');
+    }
+
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'user_courses')
+            ->withTimestamps()
+            ->withPivot(['created_by', 'updated_by', 'deleted_by']);
+    }
+
+    public function progress(): HasMany
+    {
+        return $this->hasMany(UserLesson::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }
