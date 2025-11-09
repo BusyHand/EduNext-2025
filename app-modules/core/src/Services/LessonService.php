@@ -2,9 +2,12 @@
 
 namespace Modules\Core\Services;
 
+use App\Events\AskLessonQuestionEvent;
 use App\Http\Data\PageableData;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Modules\AiIntegration\Data\AiAnswerToQuestion;
+use Modules\AiIntegration\Data\QuestionToAI;
 use Modules\Core\Http\Filters\CourseFilter;
 use Modules\Core\Http\Filters\LessonFilter;
 use Modules\Core\Models\Course;
@@ -16,9 +19,7 @@ readonly class LessonService
 {
     public function __construct(
         private LessonRepository $lessonRepository
-    )
-    {
-    }
+    ) {}
 
     public function findAll(LessonFilter $filterQuery, PageableData $pageableData): LengthAwarePaginator
     {
@@ -49,4 +50,13 @@ readonly class LessonService
     {
         $this->lessonRepository->deleteHard($lesson);
     }
+
+    //тут уже асинхронно делать было лень :), так что немного колхоза
+    public function askQuestion(Lesson $lesson, string $question): AiAnswerToQuestion
+    {
+        $questionToAi = new QuestionToAI($question);
+        event(new AskLessonQuestionEvent($lesson, $questionToAi));
+        return $questionToAi->getAnswer();
+    }
+
 }

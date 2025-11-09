@@ -2,7 +2,7 @@
 
 namespace Modules\Core\Http\Mappers;
 
-use App\Http\Dtos\PagebleDto;
+use App\Http\Dtos\PaginateDto;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Modules\Core\Http\Filters\LessonFilter;
 use Modules\Core\Http\Filters\Requests\LessonFilterRequest;
@@ -17,7 +17,7 @@ class LessonMapper
 
     public function toFilter(LessonFilterRequest $filterRequest): LessonFilter
     {
-        return new LessonFilter($filterRequest->toCourseFilterData());
+        return new LessonFilter($filterRequest->toFilterData());
     }
 
     public function toModelFromStore(LessonStoreRequest $data): Lesson
@@ -64,8 +64,8 @@ class LessonMapper
         );
     }
 
-    public function toPaginateSlimDtos(LengthAwarePaginator $lessons): PagebleDto
+    public function toPaginateSlimDtos(LengthAwarePaginator $lessons): PaginateDto
     {
-        return PagebleDto::fromPaginator($lessons, fn($course) => $this->toSlimDto($course));
+        return PaginateDto::toPaginateDto($lessons, fn($lesson) => $this->toSlimDto($lesson));
     }
 }

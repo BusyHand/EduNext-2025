@@ -2,12 +2,14 @@
 
 namespace Modules\Core\Http\Controllers;
 
-use App\Http\Dtos\PagebleDto;
+use App\Http\Dtos\PaginateDto;
 use Illuminate\Http\Response;
+use Modules\AiIntegration\Data\AiAnswerToQuestion;
 use Modules\Core\Http\Filters\Requests\LessonFilterRequest;
 use Modules\Core\Http\Mappers\LessonMapper;
 use Modules\Core\Http\Requests\LessonStoreRequest;
 use Modules\Core\Http\Requests\LessonUpdateRequest;
+use Modules\Core\Http\Requests\QuestionRequest;
 use Modules\Core\Http\Response\LessonDto;
 use Modules\Core\Models\Lesson;
 use Modules\Core\Services\LessonService;
@@ -18,11 +20,9 @@ readonly class LessonController
     public function __construct(
         private LessonService $lessonService,
         private LessonMapper  $lessonMapper,
-    )
-    {
-    }
+    ) {}
 
-    public function findAll(LessonFilterRequest $filterRequest): PagebleDto
+    public function findAll(LessonFilterRequest $filterRequest): PaginateDto
     {
         $filterQuery = $this->lessonMapper->toFilter($filterRequest);
         $paginateLessons = $this->lessonService->findAll($filterQuery, $filterRequest->toPageableData());
@@ -46,6 +46,11 @@ readonly class LessonController
         $newLesson = $this->lessonMapper->toModelFromUpdate($lessonRequest);
         $updatedLesson = $this->lessonService->updatePartial($lesson, $newLesson);
         return $this->lessonMapper->toDto($updatedLesson);
+    }
+
+    public function askQuestion(Lesson $lesson, QuestionRequest $question): AiAnswerToQuestion
+    {
+        return $this->lessonService->askQuestion($lesson, $question->question);
     }
 
     public function restore(int $lessonId): LessonDto

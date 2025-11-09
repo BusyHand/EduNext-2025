@@ -2,19 +2,31 @@
 
 namespace Modules\Core\Http\Mappers;
 
-use Modules\Core\Http\Requests\UserCourseDto;
+use App\Http\Dtos\PaginateDto;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Modules\Core\Http\Filters\Requests\UserCourseFilterRequest;
+use Modules\Core\Http\Filters\UserCourseFilter;
+use Modules\Core\Http\Response\UserCourseDto;
 use Modules\Core\Models\UserCourse;
 
 class UserCourseMapper
 {
-    public function toModel(UserCourseDto $data): UserCourse
+    public function toFilter(UserCourseFilterRequest $filterRequest): UserCourseFilter
     {
-        return new UserCourse([
-            'user_id' => $data->user_id,
-            'course_id' => $data->course_id,
-            'created_by' => $data->created_by,
-            'updated_by' => $data->updated_by,
-            'deleted_by' => $data->deleted_by,
-        ]);
+        return new UserCourseFilter($filterRequest->toFilterData());
+    }
+
+    public function toDto(UserCourse $userCourse): UserCourseDto
+    {
+        return new UserCourseDto(
+            id: $userCourse->id,
+            userId: $userCourse->user_id,
+            courseId: $userCourse->course_id,
+        );
+    }
+
+    public function toPaginateDtos(LengthAwarePaginator $userCourses): PaginateDto
+    {
+        return PaginateDto::toPaginateDto($userCourses, fn($userCourse) => $this->toDto($userCourse));
     }
 }

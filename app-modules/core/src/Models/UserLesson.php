@@ -3,6 +3,7 @@
 namespace Modules\Core\Models;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,6 +26,7 @@ class UserLesson extends Model
         'is_completed' => 'boolean',
         'completed_at' => 'datetime',
     ];
+
 
     public function user(): BelongsTo
     {

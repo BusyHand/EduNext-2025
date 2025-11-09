@@ -33,7 +33,7 @@ class CourseFilterRequest extends BasePageableRequest
         ];
     }
 
-    public function toCourseFilterData(): FilterData
+    public function toFilterData(): FilterData
     {
         return new FilterData($this->validated(), $this->defaultValues);
     }

@@ -8,13 +8,12 @@ use Illuminate\Support\ServiceProvider;
 
 class CoreServiceProvider extends ServiceProvider
 {
-	public function register(): void
-	{
-	}
+    public function register(): void {}
 
-	public function boot(): void
-	{
-        //$this->user = User::factory()->create();
-        //Auth::setUser($this->user);
-	}
+    public function boot(): void
+    {
+        //todo
+        $this->user = User::factory()->create();
+        Auth::setUser($this->user);
+    }
 }

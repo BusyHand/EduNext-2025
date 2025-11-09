@@ -2,6 +2,7 @@
 
 use Modules\Core\Http\Controllers\CourseController;
 use Modules\Core\Http\Controllers\LessonController;
+use Modules\Core\Http\Controllers\TaskController;
 use Modules\Core\Http\Controllers\UserCourseController;
 use Modules\Core\Http\Controllers\UserLessonController;
 
@@ -24,29 +25,31 @@ Route::prefix('lessons')->group(function () {
     Route::delete('/{lesson}/soft', [LessonController::class, 'deleteSoft']);
     Route::delete('/{lesson}/force', [LessonController::class, 'deleteHard']);
 
-    //todo реализовать
     Route::post('/{lesson}/ask', [LessonController::class, 'askQuestion']);
-
-    //todo реализовать доп 2
-    Route::get('/{lesson}/generate-task', [LessonController::class, 'askQuestion']);
-
+    Route::get('/{lesson}/generate-task', [TaskController::class, 'generateTask']);
+    Route::post('/{task}/answer', [TaskController::class, 'answerTask']);
 });
 
 Route::prefix('/users')->group(function () {
     Route::get('/courses', [UserCourseController::class, 'findAll']);
-    Route::post('/{user}/courses/{course}', [UserCourseController::class, 'store']);
-    Route::patch('/{user}/courses/{course}/restore', [UserCourseController::class, 'restore']);
+    Route::post('/{user}/courses/{course}/', [UserCourseController::class, 'store']);
+    Route::patch('/{userId}/courses/{courseId}/restore', [UserCourseController::class, 'restore'])->whereNumber(['userId', 'courseId']);
     Route::delete('/{user}/courses/{course}/soft', [UserCourseController::class, 'deleteSoft']);
     Route::delete('/{user}/courses/{course}/force', [UserCourseController::class, 'deleteHard']);
 });
 
-Route::prefix('/users')->group(function () {
+Route::prefix('/users')->group(callback: function () {
     Route::get('/lessons', [UserLessonController::class, 'findAll']);
-    Route::post('/{user}/lessons/{lessons}', [UserLessonController::class, 'store']);
-    Route::patch('/{user}/lessons/{lessons}/restore', [UserLessonController::class, 'restore']);
-    Route::delete('/{user}/lessons/{lessons}/soft', [UserLessonController::class, 'deleteSoft']);
-    Route::delete('/{user}/lessons/{lessons}/force', [UserLessonController::class, 'deleteHard']);
+    Route::post('/{user}/lessons/{lesson}', [UserLessonController::class, 'store']);
+    Route::patch('/{userId}/lessons/{lessonId}/restore', [UserLessonController::class, 'restore'])->whereNumber(['userId', 'lessonId']);
+    Route::delete('/{user}/lessons/{lesson}/soft', [UserLessonController::class, 'deleteSoft']);
+    Route::delete('/{user}/lessons/{lesson}/force', [UserLessonController::class, 'deleteHard']);
 
-    //todo реализовать
-    Route::post('/{user}/lessons/{lessons}/action/complete', [UserLessonController::class, 'askQuestion']);
+    Route::post('/{lesson}/complete', [UserLessonController::class, 'complete']);
+});
+
+
+Route::prefix('/tasks')->group(callback: function () {
+    Route::get('/', [TaskController::class, 'findAll']);
+    Route::post('/{task}/answer', [TaskController::class, 'answerTask']);
 });

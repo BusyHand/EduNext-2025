@@ -3,11 +3,16 @@
 namespace Modules\Core\Models;
 
 use App\Models\User;
+use App\Traits\HasUserActions;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserCourse extends Pivot
 {
+    use HasFactory, SoftDeletes, HasUserActions;
+
     protected $table = 'user_courses';
 
     protected $fillable = [

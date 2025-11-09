@@ -2,7 +2,7 @@
 
 namespace Modules\Core\Http\Controllers;
 
-use App\Http\Dtos\PagebleDto;
+use App\Http\Dtos\PaginateDto;
 use Illuminate\Http\Response;
 use Modules\Core\Http\Filters\Requests\CourseFilterRequest;
 use Modules\Core\Http\Mappers\CourseMapper;
@@ -18,11 +18,9 @@ readonly class CourseController
     public function __construct(
         private CourseService $courseService,
         private CourseMapper  $courseMapper
-    )
-    {
-    }
+    ) {}
 
-    public function findAll(CourseFilterRequest $filterRequest): PagebleDto
+    public function findAll(CourseFilterRequest $filterRequest): PaginateDto
     {
         $filterQuery = $this->courseMapper->toFilter($filterRequest);
         $paginateCourses = $this->courseService->findAll($filterQuery, $filterRequest->toPageableData());
