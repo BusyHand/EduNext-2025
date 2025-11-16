@@ -1,22 +1,25 @@
 # Инструкция по запуску Laravel проекта
 
-## 🚀 Быстрый запуск (4 команды)
+## 1. Положите .env в корень проекта который находится на диске который я прикрепил в ответ на задание
+
+## 2. Запуск
 
 ```bash
-# 1. Сборка и запуск контейнеров
 docker-compose up --build -d
 
 docker-compose exec laravel_app composer install --no-dev --optimize-autoloader
 
 docker-compose exec laravel_app php artisan migrate --force
 
-docker-compose exec laravel_app php artisan db:seed
+#Если впервые
+docker-compose exec laravel_app php artisan db:seed 
 
 docker-compose exec -d laravel_app php artisan queue:work
 ```
+## 3. Документация в файле ApiDoc.md или скачайте в том же диске api доки для postman или bruno
 
 
-## 🤖 Примеры промтов для AI интеграции
+## Примеры промтов которые используются для AI интеграции
 
 ### 1. Генерация учебного задания
 ```json

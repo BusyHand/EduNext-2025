@@ -23,7 +23,6 @@ readonly class AuthService
             $user->credentials->user_id = $user->id;
             $user->credentials->password = Hash::make($user->credentials->password);
             $user->credentials->save();
-            $user->assignRole('student'); // или другая роль по умолчанию
             return $user;
         });
     }
