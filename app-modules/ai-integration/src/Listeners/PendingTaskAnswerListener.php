@@ -26,7 +26,7 @@ class PendingTaskAnswerListener implements ShouldQueue
     public function handle(PendingTaskAnswerEvent $event): void
     {
         $aiRequest = $this->taskPromptTemplate->reviewAnswerAiRequest($event->task);
-        $aiResponse = $this->openRouterClient->chat($aiRequest);
+        $aiResponse = $this->openRouterClient->chat($aiRequest, 'reasoning');
         $reviewedTask = $this->aiRequestMapper->toReviewedTask($aiResponse);
         if ($reviewedTask->isCorrect) {
             event(new AcceptedTaskAnswerEvent($event->task, $reviewedTask));

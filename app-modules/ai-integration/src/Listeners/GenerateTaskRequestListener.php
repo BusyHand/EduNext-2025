@@ -25,7 +25,7 @@ class GenerateTaskRequestListener implements ShouldQueue
     public function handle(GenerateTaskRequestEvent $event): void
     {
         $aiRequest = $this->taskPromptBuilder->generateTaskAiRequest($event->task);
-        $aiResponse = $this->openRouterClient->chat($aiRequest);
+        $aiResponse = $this->openRouterClient->chat($aiRequest, 'content');
         $generatedTask = $this->aiResponseMapper->toGeneratedTask($aiResponse);
         event(new TaskGenerationCompletedEvent($event->task, $generatedTask));
     }

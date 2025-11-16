@@ -25,13 +25,13 @@ readonly class OpenRouterClient
         $this->baseUrl = config('openrouter.api_endpoint');
     }
 
-    public function chat(AiRequest $aiRequest): AiResponse
+    public function chat(AiRequest $aiRequest, string $whatNeeded): AiResponse
     {
         if ($aiRequest->needToValidateContent) {
             $this->requestValidator->validateRequest($aiRequest->message);
         }
         $response = $this->sendToChat($aiRequest->prompt);
-        return new AiResponse($response->json('choices.0.message.content'));
+        return new AiResponse($response->json('choices.0.message.' . $whatNeeded));
     }
 
     public function sendToChat(string $prompt): Response
