@@ -22,7 +22,7 @@ readonly class AskLessonQuestionListener
     public function handle(AskLessonQuestionEvent $event): void
     {
         $aiRequest = $this->lessonAiRequestBuilder->generateLessonQuestion($event->lesson, $event->question->getQuestion());
-        $aiResponse = $this->openRouterClient->chat($aiRequest);
+        $aiResponse = $this->openRouterClient->chat($aiRequest, 'content');
         $answer = $this->aiLessonMapper->toAnswer($aiResponse);
         $event->question->setAnswer($answer);
     }
